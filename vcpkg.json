@@ -1,0 +1,30 @@
+{
+  "name": "imaginator",
+  "version-string": "0.1.0",
+  "dependencies": [
+    {
+      "name": "spdlog",
+      "default-features": false,
+      "version>=": "1.17.0"
+    }
+  ],
+    "features": {
+    "desktop-ui": {
+      "description": "Dependencies for the Qt desktop user interface.",
+      "dependencies": [
+        {
+          "name": "qtbase",
+          "default-features": false,
+          "version>=": "6.10.0"
+        },
+        {
+          "name": "qtdeclarative",
+          "default-features": false,
+          "version>=": "6.10.0"
+        }
+      ]
+    }
+  },
+  "builtin-baseline": "66c0373dc7fca549e5803087b9487edfe3aca0a1",
+  "overrides": []
+}
