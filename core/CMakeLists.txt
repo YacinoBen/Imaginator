@@ -31,7 +31,7 @@ endif()
 # If we reach here, packages are guaranteed to exist
 target_link_libraries(imaginator_core PUBLIC
     spdlog::spdlog
-    sd
+    stable-diffusion::stable-diffusion
 )
 
 # Include directories
