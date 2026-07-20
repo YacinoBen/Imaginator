@@ -9,6 +9,7 @@ RUN apt-get update && apt-get install -y \
     build-essential \
     python3-pip \
     ninja-build \
+    libgl1-mesa-dev \
     libvulkan-dev \
     glslc \
     spirv-headers \
