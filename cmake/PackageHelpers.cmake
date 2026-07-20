@@ -65,10 +65,7 @@ function(find_stable_diffusion_package)
     FetchContent_Declare(
         sd_cpp
         GIT_REPOSITORY https://github.com/leejet/stable-diffusion.cpp.git
-        GIT_TAG        master
-        GIT_SHALLOW    FALSE
-        GIT_SUBMODULES RECURSIVE
-        SOURCE_SUBDIR  .
+        GIT_TAG        master.
     )
 
     # Disable building examples in stable-diffusion.cpp to avoid unnecessary dependencies and reduce build time.
