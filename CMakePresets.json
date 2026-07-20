@@ -1,0 +1,469 @@
+{
+    "version": 6,
+    "cmakeMinimumRequired": {
+        "major": 3,
+        "minor": 21,
+        "patch": 0
+    },
+    "configurePresets": [
+        {
+            "name": "base",
+            "hidden": true,
+            "binaryDir": "${sourceDir}/build/${presetName}",
+            "cacheVariables": {
+                "CMAKE_CXX_STANDARD": "23",
+                "CMAKE_CXX_STANDARD_REQUIRED": "ON",
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+                "QT_NO_PRIVATE_MODULE_WARNING": "ON",
+                "BUILD_DESKTOP_UI": "OFF",
+                "BUILD_MOBILE_UI": "OFF",
+                "BUILD_TESTS": "OFF",
+                "BUILD_BENCHMARKS": "OFF",
+                "BUILD_EXAMPLES": "OFF"
+            }
+        },
+        {
+            "name": "default",
+            "displayName": "Default (Auto-detect Generator)",
+            "description": "Default preset - auto-detects available build system",
+            "inherits": "base",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug"
+            }
+        },
+        {
+            "name": "debug",
+            "displayName": "Debug",
+            "description": "Debug build",
+            "inherits": "base",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug"
+            }
+        },
+        {
+            "name": "release",
+            "displayName": "Release",
+            "description": "Release optimized",
+            "inherits": "base",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release"
+            }
+        },
+        {
+            "name": "relwithdebinfo",
+            "displayName": "RelWithDebInfo",
+            "description": "Release with debug symbols",
+            "inherits": "base",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+            }
+        },
+        {
+            "name": "debug-ninja",
+            "displayName": "Debug (Ninja)",
+            "description": "Debug with Ninja generator",
+            "inherits": "base",
+            "generator": "Ninja",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug"
+            }
+        },
+        {
+            "name": "release-ninja",
+            "displayName": "Release (Ninja)",
+            "description": "Release with Ninja",
+            "inherits": "base",
+            "generator": "Ninja",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release"
+            }
+        },
+        {
+            "name": "release-make",
+            "displayName": "Release (Make)",
+            "description": "Release with Make",
+            "inherits": "base",
+            "generator": "Unix Makefiles",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release"
+            }
+        },
+        {
+            "name": "debug-make",
+            "displayName": "Debug (Make)",
+            "description": "Debug with Make",
+            "inherits": "base",
+            "generator": "Unix Makefiles",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug"
+            }
+        },                 
+        {
+            "name": "debug-mingw",
+            "displayName": "Debug (MinGW Makefiles)",
+            "description": "Debug with MinGW Makefiles (Qt MinGW)",
+            "inherits": "base",
+            "generator": "MinGW Makefiles",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug"
+            }
+        },
+        {
+            "name": "release-mingw",
+            "displayName": "Release (MinGW Makefiles)",
+            "description": "Release with MinGW Makefiles",
+            "inherits": "base",
+            "generator": "MinGW Makefiles",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release"
+            }
+        },
+        {
+            "name": "debug-vs",
+            "displayName": "Debug (Visual Studio)",
+            "description": "Debug with Visual Studio generator",
+            "inherits": "base",
+            "generator": "Visual Studio 18 2026",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug"
+            },
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Windows"
+            }
+        },
+        {
+            "name": "release-vs",
+            "displayName": "Release (Visual Studio)",
+            "description": "Release with Visual Studio",
+            "inherits": "base",
+            "generator": "Visual Studio 18 2026",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release"
+            },
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Windows"
+            }
+        },
+        {
+            "name": "vcpkg-base",
+            "hidden": true,
+            "inherits": "base",
+
+            "cacheVariables": {
+                "VCPKG_INSTALLED_DIR": "${sourceDir}/build/vcpkg_installed",
+                "VCPKG_MANIFEST_MODE": "ON",
+                "QT_CREATOR_SKIP_MAINTENANCE_TOOL_PROVIDER": "ON",
+
+                "CMAKE_TOOLCHAIN_FILE": {
+                    "type": "FILEPATH",
+                    "value": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
+                }
+            }
+        },
+        {
+            "name": "debug-vcpkg-msvc",
+            "displayName": "Debug MSVC (vcpkg-core)",
+            "description": "Debug with vcpkg and MSVC",
+            "inherits": "vcpkg-base",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "VCPKG_HOST_TRIPLET": "x64-windows",
+                "VCPKG_TARGET_TRIPLET": "x64-windows"
+            },
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Windows"
+            }
+        },
+        {
+            "name": "release-vcpkg-msvc",
+            "displayName": "Release MSVC (vcpkg-core)",
+            "description": "Release with vcpkg and MSVC",
+            "inherits": "vcpkg-base",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release",
+                "VCPKG_BUILD_TYPE": "release",
+                "VCPKG_HOST_TRIPLET": "x64-windows",
+                "VCPKG_TARGET_TRIPLET": "x64-windows-release"
+            },
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Windows"
+            }
+        },
+        {
+            "name": "release-vcpkg-msvc-desktop",
+            "displayName": "Release MSVC (vcpkg-Qt)",
+            "description": "Release with vcpkg and MSVC for Desktop UI",
+            "inherits": "release-vcpkg-msvc",
+            "cacheVariables": {
+                "VCPKG_MANIFEST_FEATURES": "desktop-ui",
+                "BUILD_DESKTOP_UI": "ON"
+            }
+        },
+        {
+            "name": "debug-vcpkg-msvc-desktop",
+            "displayName": "Debug MSVC (vcpkg-Qt)",
+            "description": "Debug with vcpkg and MSVC for Desktop UI",
+            "inherits": "debug-vcpkg-msvc",
+            "cacheVariables": {
+                "VCPKG_MANIFEST_FEATURES": "desktop-ui",
+                "BUILD_DESKTOP_UI": "ON"
+            }
+        },
+        {
+            "name": "debug-vcpkg-mingw",
+            "displayName": "Debug MinGW (vcpkg-core)",
+            "description": "Debug build with MinGW and vcpkg",
+            "inherits": "vcpkg-base",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "CMAKE_CXX_COMPILER": "g++",
+                "VCPKG_TARGET_TRIPLET": "x64-mingw-dynamic",
+                "VCPKG_HOST_TRIPLET": "x64-mingw-dynamic"
+            },
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Windows"
+            }
+        },
+        {
+            "name": "debug-vcpkg-mingw-desktop",
+            "displayName": "Debug MinGW (vcpkg-Qt)",
+            "description": "Debug build with MinGW and vcpkg for Desktop UI",
+            "inherits": "debug-vcpkg-mingw",
+            "cacheVariables": {
+                "VCPKG_MANIFEST_FEATURES": "desktop-ui",
+                "BUILD_DESKTOP_UI": "ON"
+            }
+        },
+        {
+            "name": "release-vcpkg-mingw",
+            "displayName": "Release MinGW (vcpkg-core)",
+            "description": "Release build with MinGW and vcpkg (optimized)",
+            "inherits": "vcpkg-base",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release",
+                "CMAKE_CXX_COMPILER": "g++",
+                "VCPKG_TARGET_TRIPLET": "x64-mingw-dynamic-release",
+                "VCPKG_HOST_TRIPLET": "x64-mingw-dynamic"
+            },
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Windows"
+            }
+        },
+        {
+            "name": "release-vcpkg-mingw-desktop",
+            "displayName": "Release MinGW (vcpkg-Qt)",
+            "description": "Release build with MinGW and vcpkg for Desktop UI",
+            "inherits": "release-vcpkg-mingw",
+            "cacheVariables": {
+                "VCPKG_MANIFEST_FEATURES": "desktop-ui",
+                "BUILD_DESKTOP_UI": "ON"
+            }
+        },
+        {
+            "name": "debug-homebrew",
+            "displayName": "Debug (Homebrew - macOS)",
+            "description": "Debug with Homebrew",
+            "inherits": "base",
+            "generator": "Ninja",
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Darwin"
+            },
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "CMAKE_PREFIX_PATH": "/opt/homebrew;/usr/local"
+            }
+        },
+        {
+            "name": "release-homebrew",
+            "displayName": "Release (Homebrew - macOS)",
+            "description": "Release with Homebrew",
+            "inherits": "base",
+            "generator": "Ninja",
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Darwin"
+            },
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release",
+                "CMAKE_PREFIX_PATH": "/opt/homebrew;/usr/local"
+            }
+        },
+
+        {
+            "name": "release-ninja-linux",
+            "displayName": "Release (Ninja - Linux)",
+            "description": "Release build with Ninja generator, using system-installed dependencies (apt/dnf/pacman)",
+            "inherits": "base",
+            "generator": "Ninja",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release"
+            },
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Linux"
+            }
+        },
+        {
+            "name": "debug-ninja-linux",
+            "displayName": "Debug (Ninja - Linux)",
+            "description": "Debug build with Ninja generator, using system-installed dependencies (apt/dnf/pacman)",
+            "inherits": "base",
+            "generator": "Ninja",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug"
+            },
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Linux"
+            }
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "default",
+            "configurePreset": "default",
+            "displayName": "Build Default"
+        },
+        {
+            "name": "debug",
+            "configurePreset": "debug",
+            "displayName": "Build Debug"
+        },
+        {
+            "name": "release",
+            "configurePreset": "release",
+            "displayName": "Build Release"
+        },
+        {
+            "name": "relwithdebinfo",
+            "configurePreset": "relwithdebinfo",
+            "displayName": "Build RelWithDebInfo"
+        },
+        {
+            "name": "debug-ninja",
+            "configurePreset": "debug-ninja",
+            "displayName": "Build Debug (Ninja)"
+        },
+        {
+            "name": "release-ninja",
+            "configurePreset": "release-ninja",
+            "displayName": "Build Release (Ninja)"
+        },
+        {
+            "name": "debug-make",
+            "configurePreset": "debug-make",
+            "displayName": "Build Debug (Make)"
+        },
+        {
+            "name": "release-make",
+            "configurePreset": "release-make",
+            "displayName": "Build Release (Make)"
+        },
+        {
+            "name": "debug-mingw",
+            "configurePreset": "debug-mingw",
+            "displayName": "Build Debug (MinGW)"
+        },
+        {
+            "name": "release-mingw",
+            "configurePreset": "release-mingw",
+            "displayName": "Build Release (MinGW)"
+        },
+        {
+            "name": "debug-vs",
+            "configurePreset": "debug-vs",
+            "displayName": "Build Debug (VS)"
+        },
+        {
+            "name": "release-vs",
+            "configurePreset": "release-vs",
+            "displayName": "Build Release (VS)"
+        },
+        {
+            "name": "debug-vcpkg-msvc",
+            "configurePreset": "debug-vcpkg-msvc",
+            "displayName": "Build Debug MSVC (vcpkg)"
+        },
+        {
+            "name": "debug-vcpkg-msvc-desktop",
+            "configurePreset": "debug-vcpkg-msvc-desktop",
+            "displayName": "Build Debug MSVC (vcpkg Desktop UI)"
+        },
+        {
+            "name": "release-vcpkg-msvc",
+            "configurePreset": "release-vcpkg-msvc",
+            "displayName": "Build Release MSVC (vcpkg)"
+        },
+        {
+            "name": "release-vcpkg-msvc-desktop",
+            "configurePreset": "release-vcpkg-msvc-desktop",
+            "displayName": "Build Release MSVC (vcpkg Desktop UI)"
+        },
+        {
+            "name": "debug-vcpkg-mingw",
+            "configurePreset": "debug-vcpkg-mingw",
+            "displayName": "Build Debug MinGW (vcpkg)"
+        },
+        {
+            "name": "debug-vcpkg-mingw-desktop",
+            "configurePreset": "debug-vcpkg-mingw-desktop",
+            "displayName": "Build Debug MinGW (vcpkg Desktop UI)"
+        },
+        {
+            "name": "release-vcpkg-mingw-desktop",
+            "configurePreset": "release-vcpkg-mingw-desktop",
+            "displayName": "Build Release MinGW (vcpkg Desktop UI)"
+        },
+        {
+            "name": "release-vcpkg-mingw",
+            "configurePreset": "release-vcpkg-mingw",
+            "displayName": "Build Release MinGW (vcpkg)"
+        },
+        {
+            "name": "debug-homebrew",
+            "configurePreset": "debug-homebrew",
+            "displayName": "Build Debug (Homebrew)"
+        },
+        {
+            "name": "release-homebrew",
+            "configurePreset": "release-homebrew",
+            "displayName": "Build Release (Homebrew)"
+        },
+        {
+            "name": "release-ninja-linux",
+            "configurePreset": "release-ninja-linux",
+            "displayName": "Build Release (Ninja - Linux)"
+        },
+        {
+            "name": "debug-ninja-linux",
+            "configurePreset": "debug-ninja-linux",
+            "displayName": "Build Debug (Ninja - Linux)"
+        }
+    ],
+    "testPresets": [
+        {
+            "name": "default",
+            "configurePreset": "debug",
+            "output": {
+                "outputOnFailure": true
+            }
+        }
+    ]
+}
