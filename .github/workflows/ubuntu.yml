@@ -89,7 +89,7 @@ jobs:
         id: configure
         run: |
           TESTS_FLAG=""
-          
+ 
           if [ -d "tests" ] && [ "$(ls -A tests 2>/dev/null)" ]; then
             TESTS_FLAG="-DBUILD_TESTS=ON"
             echo "::notice file=tests::the directory 'tests' exists and is not empty. Tests enabled."
@@ -102,8 +102,7 @@ jobs:
           -DBUILD_DESKTOP_UI:BOOL=ON \
           ${TESTS_FLAG} \
           -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} \
-          -DQt6_DIR=/opt/qt/6.10.2/gcc_64/lib/cmake/Qt6
-
+          -DCMAKE_PREFIX_PATH=/opt/qt/6.10.2/gcc_64
         shell: bash
 
       # ====================================================================
