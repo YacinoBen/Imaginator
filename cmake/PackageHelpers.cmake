@@ -24,7 +24,8 @@ function(find_required_packages)
     find_spdlog_package()
 
     # stable-diffusion.cpp (mandatory)
-    find_stable-diffusion_package()
+    find_stable_diffusion_package()
+
     summarize_found_packages()
     warn_halide_requirements()
 endfunction()
@@ -55,7 +56,7 @@ endfunction()
 #============================================================
 # Find stable-diffusion.cpp
 #============================================================
-function(find_stable-diffusion_package)
+function(find_stable_diffusion_package)
     message(STATUS "Fetching stable-diffusion.cpp")
 
     # We use FetchContent instead of CPM because stable-diffusion.cpp has submodules that need to be initialized.
