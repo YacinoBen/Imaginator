@@ -1,12 +1,10 @@
 # ⚙️ Building Qt Guide
-CaptureMoment requires Qt 6.10.2 with the qtdeclarative and qtshadertools modules. You can install it using the official graphical installer or via the command-line tool aqtinstall.
+CaptureMoment requires Qt 6.10.2 with the qtdeclarative modules. You can install it using the official graphical installer or via the command-line tool aqtinstall.
 
 ## List of modules for CaptureMoment
 * Core
 * Quick
 * Gui
-* GuiPrivate
-* ShaderTools
 
 ## Method 1: Qt Maintenance Tool (Official Installer)
 
@@ -29,19 +27,19 @@ pip3 install aqtinstall
 ##### On Linux (Ubuntu/Debian):
 
 ```bash
-aqt install-qt linux desktop 6.10.2 --outputdir /opt/qt -m qtdeclarative -m qtshadertools
+aqt install-qt linux desktop 6.10.2 --outputdir /opt/qt -m qtdeclarative
 ```
 
 ##### On macOS:
 
 ```bash
-aqt install-qt mac desktop 6.10.2 --outputdir /opt/qt -m qtdeclarative -m qtshadertools
+aqt install-qt mac desktop 6.10.2 --outputdir /opt/qt -m qtdeclarative 
 ```
 
 ##### On Windows (PowerShell):
 
 ```bash
-aqt install-qt windows desktop 6.10.2 --outputdir C:\Qt -m qtdeclarative -m qtshadertools
+aqt install-qt windows desktop 6.10.2 --outputdir C:\Qt -m qtdeclarative
 ```
 
 ### Environment Configuration
