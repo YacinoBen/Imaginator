@@ -22,6 +22,11 @@ RUN pip3 install --break-system-packages aqtinstall
 # ==============================================================================
 # Install Qt framework
 # ==============================================================================
-RUN aqt install-qt linux desktop 6.10.2 --outputdir /opt/qt -m qtdeclarative
+
+
+RUN aqt list-qt linux desktop --arch 6.10.2
+
+RUN aqt install-qt linux desktop 6.10.2 linux_gcc_64 --outputdir /opt/qt
+
 
 WORKDIR /app
