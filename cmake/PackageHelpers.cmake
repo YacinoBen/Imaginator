@@ -27,7 +27,6 @@ function(find_required_packages)
     find_stable_diffusion_package()
 
     summarize_found_packages()
-    warn_halide_requirements()
 endfunction()
 
 
@@ -59,28 +58,120 @@ endfunction()
 function(find_stable_diffusion_package)
     message(STATUS "Fetching stable-diffusion.cpp")
 
-    # We use FetchContent instead of CPM because stable-diffusion.cpp has submodules that need to be initialized.
     include(FetchContent)
 
     FetchContent_Declare(
         sd_cpp
         GIT_REPOSITORY https://github.com/leejet/stable-diffusion.cpp.git
-        GIT_TAG        master.
+        GIT_TAG        master
+        GIT_SHALLOW    TRUE
+        GIT_SUBMODULES_RECURSE TRUE
     )
 
-    # Disable building examples in stable-diffusion.cpp to avoid unnecessary dependencies and reduce build time.
-    set(SD_BUILD_EXAMPLES OFF CACHE INTERNAL "")
+    set(SD_WEBP              ON  CACHE BOOL "" FORCE)
+    set(SD_WEBM              ON  CACHE BOOL "" FORCE)
+    set(SD_USE_SYSTEM_WEBP   OFF CACHE BOOL "" FORCE)
+    set(SD_USE_SYSTEM_WEBM   OFF CACHE BOOL "" FORCE)
+
+    set(SD_CUDA              OFF CACHE BOOL "" FORCE)
+    set(SD_METAL             OFF CACHE BOOL "" FORCE)
+    set(SD_VULKAN            OFF CACHE BOOL "" FORCE)
+    set(SD_HIPBLAS           OFF CACHE BOOL "" FORCE)
+
+    set(SD_OPENCL            OFF CACHE BOOL "" FORCE)
+    set(SD_SYCL              OFF CACHE BOOL "" FORCE)
+    set(SD_MUSA              OFF CACHE BOOL "" FORCE)
+
+    set(SD_BUILD_EXAMPLES    OFF CACHE BOOL "" FORCE)
+    set(SD_BUILD_TESTS       OFF CACHE BOOL "" FORCE)
+
+
+    ## ─── CUDA : check if the compiler is available ───
+    include(CheckLanguage)
+    check_language(CUDA)
+    if(CMAKE_CUDA_COMPILER)
+        message(STATUS "CUDA compiler found: ${CMAKE_CUDA_COMPILER} → activate")
+        set(SD_CUDA ON CACHE BOOL "" FORCE)
+    else()
+        message(STATUS "CUDA compiler not available → disabled")
+    endif()
+
+     # ─── Metal : macOS only ───
+    if(APPLE)
+        find_library(METAL_FRAMEWORK Metal QUIET)
+        if(METAL_FRAMEWORK)
+            message(STATUS "Metal found → enabled")
+            set(SD_METAL ON CACHE BOOL "" FORCE)
+        else()
+            message(STATUS "Metal not found → disabled")
+        endif()
+    endif()
+
+    # ─── Vulkan : verify the SDK ───
+    find_package(Vulkan QUIET)
+    if(Vulkan_FOUND)
+        message(STATUS "Vulkan found → enabled")
+        set(SD_VULKAN ON CACHE BOOL "" FORCE)
+    else()
+        message(STATUS "Vulkan SDK not found → disabled")
+    endif()
+    
+    # ─── HIPBLAS : AMD ROCm ───
+    find_program(HIPCC_EXECUTABLE hipcc)
+    if(HIPCC_EXECUTABLE)
+        message(STATUS "HIPCC found: ${HIPCC_EXECUTABLE} -> activate")
+        set(SD_HIPBLAS ON CACHE BOOL "" FORCE)
+    else()
+        message(STATUS "HIPCC not found -> disabled")
+    endif()
+
+    # ─── SYCL : Intel oneAPI ───
+    find_program(ICPX_EXECUTABLE icpx PATHS /opt/intel/oneapi/compiler/latest/linux/bin)
+    if(ICPX_EXECUTABLE)
+        message(STATUS "Intel SYCL compiler found: ${ICPX_EXECUTABLE} -> activate")
+        set(SD_SYCL ON CACHE BOOL "" FORCE)
+    else()
+        message(STATUS "Intel SYCL compiler not found -> disabled")
+    endif()
+
+    # ─── Recap ───
+    set(ACTIVE_BACKENDS "")
+    if(SD_CUDA)
+        set(ACTIVE_BACKENDS "${ACTIVE_BACKENDS} CUDA")
+    endif()
+
+    if(SD_METAL)
+        set(ACTIVE_BACKENDS "${ACTIVE_BACKENDS} Metal")
+    endif()
+
+    if(SD_VULKAN)
+        set(ACTIVE_BACKENDS "${ACTIVE_BACKENDS} Vulkan")
+    endif()
+
+    if(SD_HIPBLAS)
+        set(ACTIVE_BACKENDS "${ACTIVE_BACKENDS} HIPBLAS")
+    endif()
+
+    if(SD_SYCL)
+        set(ACTIVE_BACKENDS "${ACTIVE_BACKENDS} SYCL")
+    endif()
+
+    if(ACTIVE_BACKENDS STREQUAL "")
+        set(ACTIVE_BACKENDS " CPU (no GPU)")
+    endif()
+
+    message(STATUS "Backends available :${ACTIVE_BACKENDS}")
 
     # stable-diffusion.cpp will search Vulkan, CUDA, etc.
-    
     FetchContent_MakeAvailable(sd_cpp)
 
     # the target name is "sd" as defined in stable-diffusion.cpp's
-    if(TARGET sd)
+    if(TARGET stable-diffusion)
         set(stable_diffusion_FOUND TRUE PARENT_SCOPE)
-        set(stable_diffusion_VERSION "master" PARENT_SCOPE)
+        set(stable_diffusion_VERSION "${SDCPP_BUILD_VERSION}" PARENT_SCOPE)
+        message(STATUS "stable-diffusion.cpp found: ${SDCPP_BUILD_VERSION}")
     else()
-        message(FATAL_ERROR "Failed to configure stable-diffusion.cpp. Check Vulkan/CUDA SDKs.")
+        message(FATAL_ERROR "Failed to configure stable-diffusion.cpp via FetchContent.")
     endif()
 
 endfunction()
