@@ -1,14 +1,7 @@
 {
   "name": "imaginator",
   "version-string": "0.1.0",
-  "dependencies": [
-    {
-      "name": "spdlog",
-      "default-features": false,
-      "version>=": "1.17.0"
-    }
-  ],
-    "features": {
+  "features": {
     "desktop-ui": {
       "description": "Dependencies for the Qt desktop user interface.",
       "dependencies": [
