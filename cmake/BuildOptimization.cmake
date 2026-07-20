@@ -6,7 +6,7 @@
 include_guard(GLOBAL)
 
 # ============================================================
-# Function: capturemoment_enable_optimizations
+# Function: imaginator_enable_optimizations
 # Description: Applies performance optimizations to a specific target.
 #              DO NOT call this on INTERFACE libraries or 3rd party targets.
 #
@@ -14,7 +14,7 @@ include_guard(GLOBAL)
 #   TARGET_NAME  : The name of the target to optimize.
 #   PCH_HEADER   : (Optional) Path to a Precompiled Header file.
 # ============================================================
-function(capturemoment_enable_optimizations TARGET_NAME)
+function(imaginator_enable_optimizations TARGET_NAME)
 
     # Check if target exists to avoid errors
     if(NOT TARGET ${TARGET_NAME})
