@@ -17,16 +17,11 @@ RUN apt-get update && apt-get install -y \
 # ==============================================================================
 # Install Python tool for Qt
 # ==============================================================================
-RUN pip3 install --break-system-packages aqtinstall
+RUN pip3 install --break-system-packages aqtinstall cmake
 
 # ==============================================================================
 # Install Qt framework
 # ==============================================================================
-
-
-RUN aqt list-qt linux desktop --arch 6.10.2
-
 RUN aqt install-qt linux desktop 6.10.2 linux_gcc_64 --outputdir /opt/qt
-
 
 WORKDIR /app
