@@ -65,7 +65,6 @@ function(find_stable_diffusion_package)
         GIT_REPOSITORY https://github.com/leejet/stable-diffusion.cpp.git
         GIT_TAG        master
         GIT_SHALLOW    TRUE
-        GIT_SUBMODULES_RECURSE TRUE
     )
 
     set(SD_WEBP              ON  CACHE BOOL "" FORCE)
@@ -87,13 +86,29 @@ function(find_stable_diffusion_package)
 
 
     ## ─── CUDA : check if the compiler is available ───
-    include(CheckLanguage)
-    check_language(CUDA)
-    if(CMAKE_CUDA_COMPILER)
-        message(STATUS "CUDA compiler found: ${CMAKE_CUDA_COMPILER} → activate")
-        set(SD_CUDA ON CACHE BOOL "" FORCE)
+    find_package(CUDAToolkit QUIET)
+    if(CUDAToolkit_FOUND)
+        message(STATUS "CUDA Toolkit found: ${CUDAToolkit_VERSION} at ${CUDAToolkit_BIN_DIR}")
+        
+        if(CUDAToolkit_NVCC_EXECUTABLE AND EXISTS "${CUDAToolkit_NVCC_EXECUTABLE}")
+            execute_process(
+                COMMAND "${CUDAToolkit_NVCC_EXECUTABLE}" --version
+                OUTPUT_QUIET
+                ERROR_QUIET
+                RESULT_VARIABLE NVCC_TEST_RESULT
+            )
+            if(NVCC_TEST_RESULT EQUAL 0)
+                message(STATUS "NVCC functional -> CUDA activate")
+                set(SD_CUDA ON CACHE BOOL "" FORCE)
+                set(CMAKE_CUDA_COMPILER "${CUDAToolkit_NVCC_EXECUTABLE}" CACHE FILEPATH "" FORCE)
+            else()
+                message(STATUS "NVCC found but not functional -> disabled")
+            endif()
+        else()
+            message(STATUS "CUDA Toolkit found but NVCC missing -> disabled")
+        endif()
     else()
-        message(STATUS "CUDA compiler not available → disabled")
+        message(STATUS "CUDA Toolkit not found -> disabled")
     endif()
 
      # ─── Metal : macOS only ───
