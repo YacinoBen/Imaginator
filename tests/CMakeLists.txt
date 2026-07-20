@@ -1,0 +1,1 @@
+#target_compile_definitions(imaginator_tests PRIVATE ENABLE_TESTS)
