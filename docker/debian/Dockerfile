@@ -7,10 +7,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 # ==============================================================================
 RUN apt-get update && apt-get install -y \
     build-essential \
-    git \
     ninja-build \
-    ccache \
-    cmake \
     libvulkan-dev \
     glslc \
     spirv-headers \
